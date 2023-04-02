@@ -1,0 +1,95 @@
+body {
+  background-color: #f8f9fa;
+}
+
+.custom-subtitle {
+  font-size: 18px;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  text-align: center;
+  color: #4a4a4a;
+  margin-bottom: 10px;
+}
+
+.custom-text {
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  color: #4a4a4a;
+}
+
+.user-area {
+  background-color: #ffffff;
+  padding: 1rem;
+}
+
+.logout-link {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #007bff;
+  text-decoration: underline;
+  font-size: inherit;
+  padding: 0;
+}
+
+.logout-link:hover {
+  color: #0056b3;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.logout-link:focus {
+  outline: none;
+}
+
+.custom-tab {
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+  border: none;
+  color: #4a4a4a;
+  margin-bottom: 1rem;
+}
+
+.custom-tab:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+
+.custom-tab.active {
+  background-color: #ffffff;
+  border-bottom: 2px solid #007bff;
+  font-weight: bold;
+}
+
+
+
+.custom-title {
+  font-size: 24px;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  color: #4a4a4a;
+  text-align: center;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  padding: 10px;
+  border-bottom: 2px solid #4a4a4a;
+}
+
+.result-card {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.result-card img {
+  margin-right: 1rem;
+}
+
+.result-card button {
+  margin-left: auto;
+}
