@@ -1,44 +1,43 @@
-import React from "react";
+import React, { useState } from 'react';
+import axios from "axios";
 import "./LoginPage.css"; // Import the CSS file for LoginPage
 import { useNavigate } from 'react-router-dom';
 
 function LoginPage(props) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
   const navigate = useNavigate();
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Call the login function passing the onLogin function from props
-    login(event, props.onLogin);   
+    login();   
   };
 
   const handleRegister = () => {
     navigate('/register');
   }
 
-  function login(event, onLogin) {
-    event.preventDefault();
-    var email = document.getElementById("email").value;
-    var password = document.getElementById("password").value;
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "https://pvefvkjla1.execute-api.us-east-1.amazonaws.com/product/login", true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onreadystatechange = function () {
+  async function login() {
+    try {
+      const response = await axios.post("https://pvefvkjla1.execute-api.us-east-1.amazonaws.com/product/login", {
+        action: "login",
+        email: email,
+        password: password,
+      });
+  
+      const responseData = response.data;
+      const responseBody = JSON.parse(response.data.body)
 
-      if (this.readyState === XMLHttpRequest.DONE) {
-        var response = JSON.parse(this.responseText);
-        var responseBody = JSON.parse(response.body);
-
-        if (response.statusCode === 400) {
-          document.getElementById("error-message").innerHTML = responseBody;
-          document.getElementById("error-message").style.display = "block";
-        } else if (response.statusCode === 200) {
-          localStorage.setItem('user_data', JSON.stringify(responseBody.user_data));
-          onLogin(); // Call the onLogin function passed from props
-        }
+      if (responseData.statusCode === 400) {
+        setErrorMessage(responseBody.message);
+      } else if (responseData.statusCode === 200) {
+        localStorage.setItem("user_data", JSON.stringify(responseBody.user_data));
+        props.onLogin();
       }
-    };
-    var data = JSON.stringify({ "action": "login", "email": email, "password": password });
-    xhr.send(data);
-    return false;
+    } catch (err) {
+      console.error("Error during login:", err.message);
+    }
   }
 
   return (
@@ -54,6 +53,8 @@ function LoginPage(props) {
                     type="email"
                     id="email"
                     name="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="form-control my-2"
                     placeholder="Input your email"
                     required
@@ -65,12 +66,14 @@ function LoginPage(props) {
                     type="password"
                     id="password"
                     name="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="form-control my-2"
                     placeholder="Input your password"
                     required
                   />
                 </div>
-                <p id="error-message" style={{ color: "red", display: "none" }}></p>
+                {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
                 <br></br>
                 <div>
                   <button type="submit" className="btn btn-primary w-100 mt-2 mb-3 rounded-pill">

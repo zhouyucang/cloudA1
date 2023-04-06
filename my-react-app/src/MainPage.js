@@ -27,14 +27,14 @@ function UserArea({ userName, onLogout }) {
 }
 
 function SubscriptionArea({ subscriptions, setSubscriptions, onRemoveSubscription }) {
-    const userData = JSON.parse(localStorage.getItem("user_data"));
     useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem("user_data"));
         if (userData) {
             getSubscriptions(userData.email, setSubscriptions);
         } else {
             console.error("User data not found in localStorage");
         }
-    }, []);
+    }, [setSubscriptions]);
 
     return (
         <div className="subscription-area">
@@ -256,19 +256,17 @@ async function removeSubscription(title, setSubscriptions) {
     const userEmail = userData.email;
 
     try {
-        const response = await fetch(API_GATEWAY_URL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ action: "remove_subscription", email: userEmail, title: title }),
+        const response = await axios.post(API_GATEWAY_URL, {
+            action: "remove_subscription",
+            email: userEmail,
+            title: title,
         });
 
-        if (response.ok) {
+        if (response.status === 200) {
             console.log("Subscription removed successfully");
             getSubscriptions(userEmail, setSubscriptions);
         } else {
-            console.error("Error removing subscription:", await response.text());
+            console.error("Error removing subscription:", response.data);
         }
     } catch (err) {
         console.error("Error removing subscription:", err.message);
@@ -314,7 +312,7 @@ function MainPage({ onLogout }) {
         getSubscriptions(userData.email, setSubscriptions).then((subs) => {
             setSubscriptions(subs);
         });
-    }, []);
+    }, [setSubscriptions, userData.email]);
 
     return (
         <div

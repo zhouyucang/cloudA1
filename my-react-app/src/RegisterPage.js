@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import './RegisterPage.css';
 
@@ -12,24 +13,25 @@ function RegisterPage({ onRegister }) {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "https://pvefvkjla1.execute-api.us-east-1.amazonaws.com/product/login", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onreadystatechange = function () {
-            if (this.readyState === XMLHttpRequest.DONE) {
-                const response = JSON.parse(this.responseText);
-                const responseBody = JSON.parse(response.body);
+        try {
+            const response = await axios.post("https://pvefvkjla1.execute-api.us-east-1.amazonaws.com/product/login", {
+                action: "register",
+                email: email,
+                username: username,
+                password: password
+            });
 
-                if (response.statusCode === 400) {
-                    setErrorMessage(responseBody.message);
-                } else if (response.statusCode === 200) {
-                    navigate("/login");
-                }
+            const responseData = response.data;
+            const responseBody = JSON.parse(response.data.body)
+
+            if (responseData.statusCode === 400) {
+                setErrorMessage(responseBody.message);
+            } else if (responseData.statusCode === 200) {
+                navigate("/login");
             }
-        };
-        const data = JSON.stringify({ "action": "register", "email": email, "username": username, "password": password });
-        xhr.send(data);
-        return false;
+        } catch (error) {
+            console.error("Error during registration:", error.message);
+        }
     };
 
     return (
@@ -46,6 +48,7 @@ function RegisterPage({ onRegister }) {
                             onChange={(event) => setEmail(event.target.value)}
                             className="form-control"
                             placeholder="Email"
+                            required
                         />
                     </div>
                     <div className="form-group">
@@ -57,6 +60,7 @@ function RegisterPage({ onRegister }) {
                             onChange={(event) => setUsername(event.target.value)}
                             className="form-control"
                             placeholder="Username"
+                            required
                         />
                     </div>
                     <div className="form-group">
@@ -68,6 +72,7 @@ function RegisterPage({ onRegister }) {
                             onChange={(event) => setPassword(event.target.value)}
                             className="form-control"
                             placeholder="Password"
+                            required
                         />
                     </div>
                     <button type="submit" className="register-button">Register</button>
